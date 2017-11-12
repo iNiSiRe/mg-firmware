@@ -1,0 +1,28 @@
+#ifndef FIRMWARE_HANDLER_H
+#define FIRMWARE_HANDLER_H
+
+#include <map>
+#include <functional>
+#include <mgos_mqtt.h>
+#include <c++/7/map>
+
+typedef std::function<void>(*handler)(struct mg_connection *, const char *, int, const char *, int, void *);
+
+std::map<const char *, handler> handlers;
+
+void subscribe(const char * topic, handler handler1)
+{
+    handlers.insert(std::pair<const char *, handler>(topic, handler1));
+    mgos_mqtt_sub(topic, handle, NULL);
+}
+
+void handle(struct mg_connection *c, const char *topic, int topic_len, const char *msg, int msg_len, void *userdata)
+{
+    auto result = handlers.find(topic);
+
+    if (result != handlers.end()) {
+        result->second(c, topic, topic_len, msg, msg_len, userdata);
+    }
+}
+
+#endif //FIRMWARE_HANDLER_H
