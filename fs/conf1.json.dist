@@ -1,0 +1,7 @@
+{
+  "app": {
+    "unit_id": 7,
+    "unit_type": "TemperatureSensorUnit",
+    "temperature_unit_pin": 5
+  }
+}

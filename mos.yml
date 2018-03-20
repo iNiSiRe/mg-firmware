@@ -14,6 +14,10 @@ tags:
 sources:
   - src
   - src/Unit
+  - /usr/local/lib/mos/ArduinoJson/src
+
+includes:
+  - /usr/local/lib/mos/ArduinoJson/src
 
 # List of dirs. Files from these dirs will be copied to the device filesystem
 filesystem:
@@ -25,14 +29,17 @@ filesystem:
 
 config_schema:
   - ["mqtt.enable", "b", true, {title: "Title"}]
-  - ["mqtt.server", "s", "192.168.31.234:1883", {title: "Title"}]
+  - ["mqtt.server", "s", "192.168.31.215:1883", {title: "Title"}]
   - ["wifi.sta.enable", "b", true, {title: "Title"}]
   - ["wifi.sta.ssid", "s", "Network", {title: "Title"}]
   - ["wifi.sta.pass", "s", "f6d11bf3cd0c232", {title: "Title"}]
   - ["wifi.ap.enable", "b", false, {title: "Title"}]
-#  - ["my_app.bool_value", "b", false, {title: "Some boolean value"}]
-#  - ["my_app.string_value", "s", "", {title: "Some string value"}]
-#  - ["my_app.int_value", "i", 123, {title: "Some integer value"}]
+  
+  - ["app", "o", {title: "Some boolean value"}]
+  - ["app.unit_type", "s", "None", {title: "Some boolean value"}]
+  - ["app.unit_id", "i", 0, {title: "Some boolean value"}]
+  - ["app.temperature_unit_pin", "i", 0, {title: "Some boolean value"}]
+  - ["app.switch_unit_pin", "i", 0, {title: "Some boolean value"}]
 
 # These settings get compiled into the C structure, and can be accessed
 # from the C code this way:
@@ -64,7 +71,10 @@ libs:
   - origin: https://github.com/mongoose-os-libs/rpc-service-gpio
   - origin: https://github.com/mongoose-os-libs/mqtt
   - origin: https://github.com/mongoose-os-libs/ota-http-server
-
+  - origin: https://github.com/mongoose-os-libs/dht
 
 # Used by the mos tool to catch mos binaries incompatible with this file format
 manifest_version: 2017-05-18
+
+cxxflags:
+  - "-Wno-error"
