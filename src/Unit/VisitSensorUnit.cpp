@@ -4,6 +4,6 @@
 
 #include "VisitSensorUnit.h"
 
-VisitSensorUnit::VisitSensorUnit(const int id, const int leftPin, const int rightPin) : Unit(id) {
+VisitSensorUnit::VisitSensorUnit(const int id, const int leftPin, const int rightPin) : Unit(id), sensor(leftPin, rightPin) {
 
 }

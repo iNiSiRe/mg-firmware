@@ -10,7 +10,7 @@ set(SOURCE_FILES
         src/Unit/TemperatureSensorUnit.cpp src/Unit/TemperatureSensorUnit.h
         src/Unit/Unit.cpp src/Unit/Unit.h
         src/Unit/VisitSensorUnit.cpp src/Unit/VisitSensorUnit.h
-        src/Hardware/ESPDigitalPin.cpp src/Hardware/ESPDigitalPin.h)
+        src/Hardware/Platform.cpp src/Hardware/Platform.h)
 
 SET(MONGOOSE_DIR /usr/local/lib/mos)
 
@@ -20,6 +20,7 @@ add_subdirectory(
 
 include_directories(firmware
         ${MONGOOSE_DIR}/mongoose-os/fw/src
+        ${MONGOOSE_DIR}/mongoose-os/fw/include
         ${MONGOOSE_DIR}/mongoose-os/
         ${MONGOOSE_DIR}/mqtt/src
         ${MONGOOSE_DIR}/mqtt/include
