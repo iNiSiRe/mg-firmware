@@ -1,9 +1,12 @@
 #include "mgos.h"
 #include "Unit/SwitchUnit.h"
 #include "Unit/TemperatureSensorUnit.h"
+#include "Unit/VisitSensorUnit.h"
 
 void init(void *arg)
 {
+    LOG(LL_INFO, ("Start"));
+
     const char* type = mgos_sys_config_get_app_unit_type();
     const int unit_id = mgos_sys_config_get_app_unit_id();
 
@@ -13,6 +16,11 @@ void init(void *arg)
     } else if (strcmp(type, "SwitchUnit") == 0) {
         const int pin = mgos_sys_config_get_app_switch_unit_pin();
         auto unit = new SwitchUnit(unit_id, pin);
+    } else if (strcmp(type, "VisitSensorUnit") == 0) {
+        const int leftPin = mgos_sys_config_get_app_visit_unit_left_pin();
+        const int rightPin = mgos_sys_config_get_app_visit_unit_right_pin();
+        const int emitterPin = mgos_sys_config_get_app_visit_unit_emitter_pin();
+        auto unit = new VisitSensorUnit(unit_id, leftPin, rightPin, emitterPin);
     } else {
         LOG(LL_INFO, ("No unit started!"));
     }

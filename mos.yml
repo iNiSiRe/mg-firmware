@@ -14,10 +14,11 @@ tags:
 sources:
   - src
   - src/Unit
-  - /usr/local/lib/mos/ArduinoJson/src
+  - src/Hardware
+  - vendor/ArduinoJson/src
 
 includes:
-  - /usr/local/lib/mos/ArduinoJson/src
+  - vendor/ArduinoJson/src
 
 # List of dirs. Files from these dirs will be copied to the device filesystem
 filesystem:
@@ -32,7 +33,7 @@ config_schema:
   - ["mqtt.server", "s", "192.168.31.215:1883", {title: "Title"}]
   - ["wifi.sta.enable", "b", true, {title: "Title"}]
   - ["wifi.sta.ssid", "s", "Network", {title: "Title"}]
-  - ["wifi.sta.pass", "s", "f6d11bf3cd0c232", {title: "Title"}]
+  - ["wifi.sta.pass", "s", "***", {title: "Title"}]
   - ["wifi.ap.enable", "b", false, {title: "Title"}]
   
   - ["app", "o", {title: "Some boolean value"}]
@@ -40,6 +41,10 @@ config_schema:
   - ["app.unit_id", "i", 0, {title: "Some boolean value"}]
   - ["app.temperature_unit_pin", "i", 0, {title: "Some boolean value"}]
   - ["app.switch_unit_pin", "i", 0, {title: "Some boolean value"}]
+
+  - ["app.visit_unit_left_pin", "i", 0, {title: "left"}]
+  - ["app.visit_unit_right_pin", "i", 0, {title: "right"}]
+  - ["app.visit_unit_emitter_pin", "i", 0, {title: "emitter"}]
 
 # These settings get compiled into the C structure, and can be accessed
 # from the C code this way:
@@ -72,9 +77,13 @@ libs:
   - origin: https://github.com/mongoose-os-libs/mqtt
   - origin: https://github.com/mongoose-os-libs/ota-http-server
   - origin: https://github.com/mongoose-os-libs/dht
+  - origin: https://github.com/mongoose-os-libs/pwm
 
 # Used by the mos tool to catch mos binaries incompatible with this file format
 manifest_version: 2017-05-18
 
 cxxflags:
+  - "-Wno-error"
+
+cflags:
   - "-Wno-error"

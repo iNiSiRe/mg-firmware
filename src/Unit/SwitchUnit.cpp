@@ -13,14 +13,14 @@ SwitchUnit::SwitchUnit(const int id, const int pin) : Unit(id), pin(pin)
     register_on_server();
 }
 
-void SwitchUnit::handler(UNUSED struct mg_connection *c, UNUSED const char *topic, UNUSED int topic_len, const char *msg,  UNUSED int msg_len, void *userdata)
+void SwitchUnit::handler(UNUSED struct mg_connection *c, UNUSED const char *topic, UNUSED int topic_len, const char *msg, UNUSED int msg_len, void *userdata)
 {
     ((SwitchUnit*) (userdata))->handler(msg_len, msg);
 }
 
 void SwitchUnit::handler(int msg_len, const char * msg)
 {
-    LOG(LL_INFO, ("Test handler, %.*s", msg_len, msg));
+    LOG(LL_INFO, ("SwitchUnit::handler -> handle %.*s", msg_len, msg));
 
     bool enabled;
 
@@ -28,7 +28,7 @@ void SwitchUnit::handler(int msg_len, const char * msg)
 
     mgos_gpio_write(pin, enabled);
 
-    LOG(LL_INFO, ("Test parser: %d", enabled));
+    LOG(LL_INFO, ("SwitchUnit::handler -> enabled=%d", enabled));
 }
 
 

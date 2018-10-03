@@ -6,6 +6,12 @@
 
 void Unit::register_on_server()
 {
+    if (!registration) {
+        return;
+    }
+
+    LOG(LL_INFO, ("Register begin"));
+
     char topic[20];
     sprintf(topic, "units/%d/register", id);
 
@@ -32,6 +38,7 @@ void Unit::register_on_server()
     }
 }
 
-Unit::Unit(const int id) : id(id) {
+Unit::Unit(const int id, const bool registration) : id(id), registration(registration)
+{
 
 }

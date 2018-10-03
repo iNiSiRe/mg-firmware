@@ -4,12 +4,15 @@
 
 class Unit {
 
+private:
+    const bool registration = false;
+
 protected:
     const int id;
     void register_on_server();
 
 public:
-    Unit(const int id);
+    Unit(int id, bool registration = true);
 };
 
 

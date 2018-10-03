@@ -10,13 +10,9 @@ set(SOURCE_FILES
         src/Unit/TemperatureSensorUnit.cpp src/Unit/TemperatureSensorUnit.h
         src/Unit/Unit.cpp src/Unit/Unit.h
         src/Unit/VisitSensorUnit.cpp src/Unit/VisitSensorUnit.h
-        src/Hardware/Platform.cpp src/Hardware/Platform.h)
-
-SET(MONGOOSE_DIR /usr/local/lib/mos)
-
-add_subdirectory(
-        vendor/mcu-libraries
 )
+
+SET(MONGOOSE_DIR vendor)
 
 include_directories(firmware
         ${MONGOOSE_DIR}/mongoose-os/fw/src
@@ -29,8 +25,9 @@ include_directories(firmware
         ${MONGOOSE_DIR}/ArduinoJson/src
         deps/wifi/include
         deps/wifi/src
+        deps/pwm/include
+        deps/pwm/src
         build/gen/
-        vendor/mcu-libraries
 )
 
 add_executable(firmware ${SOURCE_FILES})
