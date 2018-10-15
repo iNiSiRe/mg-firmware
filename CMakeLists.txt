@@ -15,9 +15,9 @@ set(SOURCE_FILES
 SET(MONGOOSE_DIR vendor)
 
 include_directories(firmware
-        ${MONGOOSE_DIR}/mongoose-os/fw/src
-        ${MONGOOSE_DIR}/mongoose-os/fw/include
-        ${MONGOOSE_DIR}/mongoose-os/
+        deps/modules/mongoose-os/fw/src
+        deps/modules/mongoose-os/fw/include
+        deps/modules/mongoose-os/
         ${MONGOOSE_DIR}/mqtt/src
         ${MONGOOSE_DIR}/mqtt/include
         ${MONGOOSE_DIR}/dht/src
@@ -28,6 +28,8 @@ include_directories(firmware
         deps/pwm/include
         deps/pwm/src
         build/gen/
+        deps/bt-common/src
+        deps/bt-common/include
 )
 
 add_executable(firmware ${SOURCE_FILES})

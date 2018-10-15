@@ -3,7 +3,7 @@
 
 #include "Unit.h"
 
-class VisitSensorUnit : Unit
+class VisitSensorUnit : public Unit
 {
 
 public:
@@ -25,7 +25,7 @@ public:
     int count = 0;
 
     unsigned long changedAt = 0;
-    int resetTime = 3000;
+    int resetTime = 1000;
     bool debug = true;
 
     State state = BEGIN;
@@ -34,7 +34,6 @@ public:
     const int leftPin, rightPin, emitterPin;
 
     VisitSensorUnit(int id, int leftPin, int rightPin, int emitterPin);
-    static void emitterToggle(void *arg);
     static void sensorLoop(void *arg);
 
     void intersection(int beam, int value);
@@ -43,6 +42,8 @@ public:
     static void interruptionHandler(int pin, void *arg);
 
     Direction detectedDirection = NONE;
+
+    void sendDirection();
 };
 
 

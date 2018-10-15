@@ -1,6 +1,14 @@
 #include <mgos.h>
 #include "VisitSensorUnit.h"
+#include <mgos_gpio.h>
 #include <mgos_pwm.h>
+#include <ArduinoJson.h>
+#include "mgos_mqtt.h"
+
+#ifndef IRAM
+#define IRAM
+#endif
+
 
 VisitSensorUnit::VisitSensorUnit(const int id, const int leftPin, const int rightPin, const int emitterPin) :
     emitterPin(emitterPin),
@@ -10,16 +18,11 @@ VisitSensorUnit::VisitSensorUnit(const int id, const int leftPin, const int righ
 {
     register_on_server();
 
-//    mgos_set_timer(1000, 0, VisitSensorUnit::emitterToggle, NULL);
     mgos_set_timer(100, MGOS_TIMER_REPEAT, VisitSensorUnit::sensorLoop, this);
-
-//    mgos_gpio_set_pull(leftPin, MGOS_GPIO_PULL_UP);
-//    mgos_gpio_set_pull(rightPin, MGOS_GPIO_PULL_UP);
 
     mgos_gpio_set_mode(leftPin, MGOS_GPIO_MODE_INPUT);
     mgos_gpio_set_mode(rightPin, MGOS_GPIO_MODE_INPUT);
-//    mgos_gpio_set_mode(emitterPin, MGOS_GPIO_MODE_OUTPUT);
-//
+
     mgos_gpio_set_int_handler_isr(leftPin, MGOS_GPIO_INT_EDGE_ANY, VisitSensorUnit::interruptionHandler, this);
     mgos_gpio_set_int_handler_isr(rightPin, MGOS_GPIO_INT_EDGE_ANY, VisitSensorUnit::interruptionHandler, this);
 
@@ -27,24 +30,10 @@ VisitSensorUnit::VisitSensorUnit(const int id, const int leftPin, const int righ
     mgos_gpio_enable_int(rightPin);
 }
 
-void VisitSensorUnit::emitterToggle(void *arg)
+IRAM void VisitSensorUnit::sensorLoop(void *arg)
 {
-    for (;;) {
-        mgos_gpio_write(14, 1);
-        mgos_usleep(10);
-        mgos_gpio_write(14, 0);
-        mgos_usleep(16);
-    }
-//    auto self = static_cast<VisitSensorUnit*>(arg);
-    mgos_gpio_toggle(14);
-
-}
-
-void VisitSensorUnit::sensorLoop(void *arg)
-{
-    auto self = static_cast<VisitSensorUnit*>(arg);
-
-    unsigned long current = (unsigned long) (mgos_uptime() * 1000);
+    auto self = (VisitSensorUnit*) arg;
+    auto current = (unsigned long) (mgos_uptime() * 1000);
 
     if (self->state == BEGIN) {
         return;
@@ -67,10 +56,14 @@ void VisitSensorUnit::sensorLoop(void *arg)
         }
 
         LOG(LL_INFO, ("Detected direction -> %d, count=%d", self->detectedDirection, self->count));
+
+        self->sendDirection();
+        self->detectedDirection = NONE;
+
     }
 }
 
-void VisitSensorUnit::intersection(int beam, int value) {
+IRAM void VisitSensorUnit::intersection(int beam, int value) {
 
     State newState;
 
@@ -172,9 +165,9 @@ void VisitSensorUnit::intersection(int beam, int value) {
 
 }
 
-void VisitSensorUnit::setState(State state) {
+IRAM void VisitSensorUnit::setState(State state) {
 
-    unsigned long current = (unsigned long) (mgos_uptime() * 1000);
+    auto current = (unsigned long) (mgos_uptime() * 1000);
 
     if (debug) {
         LOG(LL_INFO, ("%d -> %d | %d", this->state, state, current - changedAt));
@@ -185,13 +178,33 @@ void VisitSensorUnit::setState(State state) {
 
 }
 
-void VisitSensorUnit::interruptionHandler(int pin, void *arg)
+IRAM void VisitSensorUnit::interruptionHandler(int pin, void *arg)
 {
 
-    auto self = static_cast<VisitSensorUnit*>(arg);
+    auto self = (VisitSensorUnit*) arg;
 
-    int value = mgos_gpio_read(pin) ? 0 : 1;
+    int value = mgos_gpio_read(pin) ? 1 : 0;
 
-    self->intersection(pin == self->leftPin ? 1 : 2, value);
+    if (pin == self->leftPin) {
+        self->intersection(1, value);
+    } else if (pin == self->rightPin) {
+        self->intersection(2, value);
+    }
+
+}
+
+void VisitSensorUnit::sendDirection() {
+
+    char topic[20];
+    sprintf(topic, "units/%d", this->id);
+
+    char message[100];
+    DynamicJsonBuffer json(100);
+    JsonObject &root = json.createObject();
+
+    root["direction"] = this->detectedDirection == IN ? "in" : "out";
+    size_t length = root.printTo(message);
+
+    mgos_mqtt_pub(topic, message, length, 2, false);
 
 }

@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include <mgos_dht.h>
 #include "mgos.h"
 #include "TemperatureSensorUnit.h"

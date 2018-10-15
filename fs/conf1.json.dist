@@ -1,7 +1,24 @@
 {
+  "mqtt": {
+    "server": "192.168.31.10:1883"
+  },
+  "wifi": {
+    "sta": {
+      "pass": "***"
+    }
+  },
   "app": {
-    "unit_id": 7,
-    "unit_type": "TemperatureSensorUnit",
-    "temperature_unit_pin": 5
+    "unit_id": 1,
+    "unit_type": "",
+    "visit_unit_left_pin": 5,
+    "visit_unit_right_pin": 4,
+    "visit_unit_emitter_pin": 14
+  },
+  "debug": {
+    "level": 3,
+    "stderr_topic": "stdout",
+    "stderr_uart": 0,
+    "stdout_topic": "stdout",
+    "stdout_uart": 0
   }
 }

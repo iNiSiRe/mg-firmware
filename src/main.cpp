@@ -2,6 +2,7 @@
 #include "Unit/SwitchUnit.h"
 #include "Unit/TemperatureSensorUnit.h"
 #include "Unit/VisitSensorUnit.h"
+#include <common/mg_str.h>
 
 void init(void *arg)
 {
@@ -10,13 +11,13 @@ void init(void *arg)
     const char* type = mgos_sys_config_get_app_unit_type();
     const int unit_id = mgos_sys_config_get_app_unit_id();
 
-    if (strcmp(type, "TemperatureSensorUnit") == 0) {
+    if (mg_strcmp(mg_mk_str(type), mg_mk_str("TemperatureSensorUnit")) == 0) {
         const int pin = mgos_sys_config_get_app_temperature_unit_pin();
         auto unit = new TemperatureSensorUnit(unit_id, pin);
-    } else if (strcmp(type, "SwitchUnit") == 0) {
+    } else if (mg_strcmp(mg_mk_str(type), mg_mk_str("SwitchUnit")) == 0) {
         const int pin = mgos_sys_config_get_app_switch_unit_pin();
         auto unit = new SwitchUnit(unit_id, pin);
-    } else if (strcmp(type, "VisitSensorUnit") == 0) {
+    } else if (mg_strcmp(mg_mk_str(type), mg_mk_str("VisitSensorUnit")) == 0) {
         const int leftPin = mgos_sys_config_get_app_visit_unit_left_pin();
         const int rightPin = mgos_sys_config_get_app_visit_unit_right_pin();
         const int emitterPin = mgos_sys_config_get_app_visit_unit_emitter_pin();
@@ -33,6 +34,8 @@ void ping(void *arg)
 
 enum mgos_app_init_result mgos_app_init(void)
 {
+    LOG(LL_INFO, ("Init"));
+
     mgos_set_timer(20000, 0, init, NULL);
     mgos_set_timer(30000, true, ping, NULL);
 
