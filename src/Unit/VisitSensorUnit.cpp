@@ -44,7 +44,7 @@ IRAM void VisitSensorUnit::sensorLoop(void *arg)
         self->direction = NONE;
         self->detectedDirection = NONE;
 
-        LOG(LL_INFO, ("Reset state"));
+        LOG(LL_DEBUG, ("Reset state"));
     }
 
     if (self->detectedDirection != NONE) {
@@ -80,7 +80,7 @@ IRAM void VisitSensorUnit::intersection(int beam, int value) {
     }
 
     if (debug) {
-        LOG(LL_INFO, ("%d ? %d", this->state, newState));
+        LOG(LL_DEBUG, ("%d ? %d", this->state, newState));
     }
 
     if (direction == NONE) {
@@ -170,7 +170,7 @@ IRAM void VisitSensorUnit::setState(State state) {
     auto current = (unsigned long) (mgos_uptime() * 1000);
 
     if (debug) {
-        LOG(LL_INFO, ("%d -> %d | %d", this->state, state, current - changedAt));
+        LOG(LL_DEBUG, ("%d -> %d | %d", this->state, state, current - changedAt));
     }
 
     this->state = state;

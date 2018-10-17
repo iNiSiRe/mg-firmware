@@ -38,6 +38,7 @@ config_schema:
   
   - ["app", "o", {title: "Some boolean value"}]
   - ["app.unit_type", "s", "None", {title: "Some boolean value"}]
+  - ["app.module_id", "i", 0, {title: "Some boolean value"}]
   - ["app.unit_id", "i", 0, {title: "Some boolean value"}]
   - ["app.temperature_unit_pin", "i", 0, {title: "Some boolean value"}]
   - ["app.switch_unit_pin", "i", 0, {title: "Some boolean value"}]

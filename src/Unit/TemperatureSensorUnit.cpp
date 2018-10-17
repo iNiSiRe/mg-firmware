@@ -13,7 +13,7 @@ TemperatureSensorUnit::TemperatureSensorUnit(int id, int pin) : Unit(id) {
     this->sensor = mgos_dht_create(pin, DHT22);
 
     if (this->sensor == NULL) {
-        LOG(LL_INFO, ("Error init DHT22"));
+        LOG(LL_ERROR, ("Error init DHT22"));
     }
 
     this->register_on_server();
@@ -23,7 +23,7 @@ TemperatureSensorUnit::TemperatureSensorUnit(int id, int pin) : Unit(id) {
 
 void TemperatureSensorUnit::handler(int msg_len, const char *msg) {
 
-    LOG(LL_INFO, ("Test handler, %.*s", msg_len, msg));
+    LOG(LL_DEBUG, ("Test handler, %.*s", msg_len, msg));
 
 }
 
@@ -45,7 +45,7 @@ void TemperatureSensorUnit::updateTemperature()
     float t = mgos_dht_get_temp(this->sensor);
     float h = mgos_dht_get_humidity(this->sensor);
 
-    LOG(LL_INFO, ("Temperature: %f", t));
+    LOG(LL_DEBUG, ("Temperature: %f", t));
 
     char topic[20];
     sprintf(topic, "units/%d/indicators", this->id);

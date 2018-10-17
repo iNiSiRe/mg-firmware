@@ -1,6 +1,6 @@
 {
   "mqtt": {
-    "server": "192.168.31.10:1883"
+    "server": "192.168.***:1883"
   },
   "wifi": {
     "sta": {
@@ -8,7 +8,8 @@
     }
   },
   "app": {
-    "unit_id": 1,
+    "module_id": 0,
+    "unit_id": 0,
     "unit_type": "",
     "visit_unit_left_pin": 5,
     "visit_unit_right_pin": 4,
