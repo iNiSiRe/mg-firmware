@@ -28,6 +28,19 @@ public:
     int resetTime = 1000;
     bool debug = true;
 
+    struct Step {
+        State from;
+        State to;
+        unsigned long duration;
+    };
+
+    struct History {
+        Step data[50] {};
+        unsigned int size = 0;
+    };
+
+    History history;
+
     State state = BEGIN;
     Direction direction = NONE;
 

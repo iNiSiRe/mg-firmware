@@ -18,7 +18,7 @@ VisitSensorUnit::VisitSensorUnit(const int id, const int leftPin, const int righ
 {
     register_on_server();
 
-    mgos_set_timer(100, MGOS_TIMER_REPEAT, VisitSensorUnit::sensorLoop, this);
+    mgos_set_timer(50, MGOS_TIMER_REPEAT, VisitSensorUnit::sensorLoop, this);
 
     mgos_gpio_set_mode(leftPin, MGOS_GPIO_MODE_INPUT);
     mgos_gpio_set_mode(rightPin, MGOS_GPIO_MODE_INPUT);
@@ -44,6 +44,9 @@ IRAM void VisitSensorUnit::sensorLoop(void *arg)
         self->direction = NONE;
         self->detectedDirection = NONE;
 
+        memset(self->history.data, 0, sizeof(self->history.data));
+        self->history.size = 0;
+
         LOG(LL_DEBUG, ("Reset state"));
     }
 
@@ -59,6 +62,8 @@ IRAM void VisitSensorUnit::sensorLoop(void *arg)
 
         self->sendDirection();
         self->detectedDirection = NONE;
+        memset(self->history.data, 0, sizeof(self->history.data));
+        self->history.size = 0;
 
     }
 }
@@ -169,9 +174,14 @@ IRAM void VisitSensorUnit::setState(State state) {
 
     auto current = (unsigned long) (mgos_uptime() * 1000);
 
+    unsigned long duration = current - changedAt;
+
     if (debug) {
-        LOG(LL_DEBUG, ("%d -> %d | %d", this->state, state, current - changedAt));
+        LOG(LL_DEBUG, ("%d -> %d | %d", this->state, state, duration));
     }
+
+    history.data[history.size] = Step{this->state, state, duration};
+    history.size++;
 
     this->state = state;
     this->changedAt = current;
@@ -198,11 +208,12 @@ void VisitSensorUnit::sendDirection() {
     char topic[20];
     sprintf(topic, "units/%d", this->id);
 
-    char message[100];
-    DynamicJsonBuffer json(100);
+    char message[512];
+    DynamicJsonBuffer json(512);
     JsonObject &root = json.createObject();
 
     root["direction"] = this->detectedDirection == IN ? "in" : "out";
+    root["history"] = this->history;
     size_t length = root.printTo(message);
 
     mgos_mqtt_pub(topic, message, length, 2, false);

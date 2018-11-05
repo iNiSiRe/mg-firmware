@@ -15,13 +15,13 @@ set(SOURCE_FILES
 SET(MONGOOSE_DIR vendor)
 
 include_directories(firmware
-        deps/modules/mongoose-os/fw/src
-        deps/modules/mongoose-os/fw/include
-        deps/modules/mongoose-os/
-        ${MONGOOSE_DIR}/mqtt/src
-        ${MONGOOSE_DIR}/mqtt/include
-        ${MONGOOSE_DIR}/dht/src
-        ${MONGOOSE_DIR}/dht/include
+        deps/mongoose-os/fw/src
+        deps/mongoose-os/fw/include
+        deps/mongoose-os/
+        deps/mqtt/src
+        deps/mqtt/include
+        deps/dht/src
+        deps/dht/include
         ${MONGOOSE_DIR}/ArduinoJson/src
         deps/wifi/include
         deps/wifi/src
